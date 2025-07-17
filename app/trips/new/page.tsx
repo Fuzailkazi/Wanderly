@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { createTrip } from "@/lib/create-trip";
 import { cn } from "@/lib/utils";
-import { useTransition } from "react";
+import { UploadButton } from "@/lib/upload-thing";
+import { useTransition, useState } from "react";
 
 export default function NewTrip() {
   const [isPending, startTransition] = useTransition();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   return (
     <div className="max-w-lg mx-auto mt-10">
       <Card>
@@ -91,6 +93,17 @@ export default function NewTrip() {
                   required
                 />
               </div>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  if (res && res[0].ufsUrl) {
+                    setImageUrl(res[0].ufsUrl);
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  console.error("Upload error: ", error);
+                }}
+              />
             </div>
 
             <Button type="submit" disabled={isPending} className="w-full">
